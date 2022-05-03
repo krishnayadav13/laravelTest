@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\Blogs;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -13,6 +13,33 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
+Route::get('/welcome', function () {
     return view('welcome');
+});
+
+Route::get('/',[Blogs::class,'index']);
+
+Route::middleware([
+    'auth:sanctum',
+    config('jetstream.auth_session'),
+    'verified'
+])->group(function () {
+    Route::post('/createblog',[Blogs::class,'store']);
+    Route::get('/formblog', function () {
+        return view('createblog');
+    });
+    Route::get('/updateblog/{id}',[Blogs::class,'updateform']);
+    Route::post('/updateblog',[Blogs::class,'update']);
+    Route::get('/deleteblog/{id}',[Blogs::class,'destroy']);
+    
+});
+
+Route::middleware([
+    'auth:sanctum',
+    config('jetstream.auth_session'),
+    'verified'
+])->group(function () {
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    })->name('dashboard');
 });
